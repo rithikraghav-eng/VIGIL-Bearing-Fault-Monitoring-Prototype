@@ -1,4 +1,4 @@
-# VIGIL — Bearing Fault Monitoring Prototype
+# VIGIL - Bearing Fault Monitoring Prototype
 
 VIGIL is an experimental motor-health monitoring project exploring vibration analysis for rolling-element bearing faults. This repository contains two Python applications:
 
