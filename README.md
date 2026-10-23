@@ -180,9 +180,7 @@ The baseline is kept in memory and is not persisted between runs.
 
 The simulation uses a nominal sample rate of **4,000 Hz** and a **1,024-sample** FFT window. Its nominal frequency-bin spacing is:
 
-\[
-\Delta f = \frac{F_s}{N} = \frac{4000}{1024} \approx 3.91\ \text{Hz}
-\]
+Δf = Fs / N
 
 The live sensor script estimates the effective sample rate from serial timestamps. USB serial throughput, text parsing, buffering, and scheduling can introduce timing jitter. The Nyquist frequency is half the effective sample rate, so a target above that limit cannot be reliably represented. Timestamp averaging alone does not correct irregular sampling.
 
