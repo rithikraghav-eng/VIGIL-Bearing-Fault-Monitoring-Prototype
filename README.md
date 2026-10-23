@@ -1,21 +1,28 @@
 # VIGIL - Bearing Fault Monitoring Prototype
 
-VIGIL is an experimental motor-health monitoring project exploring vibration analysis for rolling-element bearing faults. This repository contains two Python applications:
+VIGIL is an experimental motor-health monitoring project exploring vibration analysis for rolling-element bearing faults. This repository brings together two Python applications and an STM32 firmware project:
 
 - **Simulation mode (`fft_sim.py`)** — generates synthetic healthy and outer-race fault vibration signals and demonstrates an FFT-based BPFO alert pipeline.
 - **Live sensor mode (`fft_real.py`)** — reads three-axis accelerometer data over USB serial, computes a live FFT, and compares the amplitude near the calculated BPFO frequency against a baseline captured while the motor is running.
+- **STM32 firmware (`STM32_Firmware/`)** — contains the STM32 project source, project metadata, STM32CubeMX configuration, and IAR Embedded Workbench files shown in the project tree.
 
-The broader VIGIL concept explores low-cost wireless motor condition monitoring. These scripts are development tools for evaluating the signal-processing approach; they are not a validated or certified diagnostic system.
+These are development tools for evaluating the signal-processing approach. The project is experimental and is not a validated or certified diagnostic system.
 
 ## Repository contents
 
 ```text
-VIGIL/
-├── fft_sim.py       # Synthetic vibration simulation and fault-mode demo
-├── fft_real.py      # Live serial accelerometer monitoring
-├── README.md        # Project documentation
-├── requirements.txt # Python dependencies
-└── .gitignore       # Local files to exclude from Git
+VIGIL-Bearing-Fault-Monitoring-Prototype/
+├── STM32_Firmware/
+│   ├── Core/
+│   │   ├── Inc/                 # Firmware header files
+│   │   └── Src/                 # Firmware and system source files
+│   ├── .project
+│   └── Vigil_vibration.ioc      # STM32CubeMX configuration
+├── fft_sim.py                   # Synthetic vibration simulation
+├── fft_real.py                  # Live serial accelerometer monitoring
+├── README.md
+├── requirements.txt
+└── .gitignore
 ```
 
 ## Features
@@ -72,6 +79,29 @@ Both applications use these prototype thresholds:
 | 1.8× or higher | Level 3 — Critical |
 
 These thresholds are hard-coded demonstration values, not validated maintenance limits. In simulation mode, the injected fault signature is designed to make the demonstration visible. In live mode, an increase at a single FFT bin does not by itself establish that a bearing defect is present.
+
+## STM32 firmware
+
+The `STM32_Firmware/` directory contains the STM32 firmware project. The project tree includes:
+
+- `Core/Inc/` — application and HAL-related header files.
+- `Core/Src/` — application and system source files.
+- `EWARM/` — IAR Embedded Workbench project files, startup assembly, and IAR linker configuration.
+- `.project` and `.mxproject` — project metadata.
+- `Vigil_vibration.ioc` — STM32CubeMX configuration.
+
+Check the complete project folder for the build configuration, startup files, and linker script required by the toolchain you intend to use. The files shown in the tree do not by themselves prove that the project can be built in every IDE.
+
+### Vendor-library handling
+
+If `STM32_Firmware/Drivers/CMSIS/` and `STM32_Firmware/Drivers/STM32F4xx_HAL_Driver/` are excluded from Git, a fresh clone will need compatible versions of these dependencies restored before the firmware can build. Obtain them through STM32CubeIDE/STM32CubeMX or the matching STM32Cube firmware package, and follow the license notices shipped with the libraries. Do not assume the firmware is self-contained when these folders are omitted.
+
+### Opening the firmware project
+
+1. Open STM32CubeIDE.
+2. Import the project from `STM32_Firmware/`.
+3. Verify the target MCU, toolchain, build configuration, startup files, linker script, and required CMSIS/HAL dependencies.
+4. Build the project and resolve any missing configuration or dependencies.
 
 ## Requirements
 
@@ -194,6 +224,7 @@ The live sensor script estimates the effective sample rate from serial timestamp
 - The baseline is not saved between runs.
 - No remaining-useful-life estimate or validated prediction of time-to-failure is implemented.
 - Results depend on sampling quality, sensor mounting, operating speed, load, noise, and bearing parameters.
+- If STM32 CMSIS/HAL libraries or toolchain-specific build files are excluded, a fresh clone may need additional setup before the firmware can compile.
 
 ## Roadmap
 
